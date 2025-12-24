@@ -1,0 +1,29 @@
+resource "aws_security_group" "web_sg" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "web" {
+  ami           = "ami-xxxxxxxx" # Amazon Linux 2
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public.id
+  security_groups = [aws_security_group.web_sg.id]
+
+  tags = {
+    Name = "iac-study-ec2"
+  }
+}
+
